@@ -20,7 +20,11 @@ typedef struct{
 	QueueHandle_t hqueue;
 } ao_ui_handle_t;
 
-
+typedef enum {
+    EVENT_PRIORITY_LOW = 0,
+    EVENT_PRIORITY_MEDIUM = 1,
+    EVENT_PRIORITY_HIGH = 2
+} EventPriority;
 
 void ao_ui_init(ao_ui_handle_t* hao);
 bool ao_ui_send(ao_ui_handle_t* hao, button_type_t button_press_type);

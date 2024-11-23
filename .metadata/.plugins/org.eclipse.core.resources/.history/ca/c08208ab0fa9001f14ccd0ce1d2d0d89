@@ -1,0 +1,57 @@
+#include "priority_queue.h"
+
+#define PRIORITY_QUEUE_ITEM_SIZE_ (sizeof(PriorityMessage))
+
+static PriorityQueue priorityQueue;
+static uint32_t currentTimestamp = 0;
+
+void PriorityQueue_Init() {
+    priorityQueue.size = 0;
+}
+
+bool PriorityQueue_Send(uint8_t priority) {
+    if (priorityQueue.size >= MAX_PRIORITY_QUEUE_SIZE) {
+        return false;  // Cola llena
+    }
+
+    // Inserta el mensaje
+    PriorityMessage newMessage = {
+        .timestamp = currentTimestamp++,
+        .priority = priority,
+    };
+    priorityQueue.messages[priorityQueue.size++] = newMessage;
+
+    // Reorganiza la cola por prioridad y timestamp (criterios de desempate)
+    for (uint8_t i = 0; i < priorityQueue.size - 1; i++) {
+        for (uint8_t j = i + 1; j < priorityQueue.size; j++) {
+            if ((priorityQueue.messages[i].priority < priorityQueue.messages[j].priority) ||
+                (priorityQueue.messages[i].priority == priorityQueue.messages[j].priority &&
+                 priorityQueue.messages[i].timestamp > priorityQueue.messages[j].timestamp)) {
+
+            	// Intercambia los mensajes
+                PriorityMessage temp = priorityQueue.messages[i];
+                priorityQueue.messages[i] = priorityQueue.messages[j];
+                priorityQueue.messages[j] = temp;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool PriorityQueue_Receive(EventPriority *priority) {
+    if (priorityQueue.size == 0) {
+        return false;  // Cola vacía
+    }
+    EventPriority rtrn;
+    // Devuelve el mensaje de mayor prioridad
+    rtrn = priorityQueue.messages[0].priority;
+
+    // Desplaza los mensajes hacia adelante
+    for (uint8_t i = 1; i < priorityQueue.size; i++) {
+        priorityQueue.messages[i - 1] = priorityQueue.messages[i];
+    }
+    priorityQueue.size--;
+
+    return true;
+}

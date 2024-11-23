@@ -1,0 +1,20 @@
+#ifndef INC_PRIORITY_QUEUE_H_
+#define INC_PRIORITY_QUEUE_H_
+
+#include <stdint.h>
+#include <stdbool.h>
+#include "ao_ui.h"
+
+#define MAX_PRIORITY_QUEUE_SIZE 10
+
+typedef struct {
+    uint32_t timestamp;
+    EventPriority priority;
+} PriorityMessage;
+
+typedef struct {
+    PriorityMessage messages[MAX_QUEUE_SIZE];
+    size_t size;  // Cantidad actual de elementos en la cola
+} PriorityQueue;
+
+#endif /* INC_PRIORITY_QUEUE_H_ */

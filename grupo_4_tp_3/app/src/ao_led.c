@@ -10,39 +10,48 @@
 #include "dwt.h"
 #include "app.h"
 #include "ao_led.h"
+#include "ao_ui.h"
 
-
-#define LED_PERIOD_        			(1000)
-#define LED_QUEUE_LENGTH_     		(5)
-#define LED_QUEUE_ITEM_SIZE_  		(sizeof(msg_t *))
-
-bool ao_led_send (msg_t *pmsg){
-	ao_led_handle_t* lh = (ao_led_handle_t*)pmsg->led_h;
-	return (pdPASS == xQueueSend(lh->hqueue, &pmsg, 0));
-}
+#define EVENT_LED_PERIOD_        			(5000)
 
 void task_led(void *argument){
-	ao_led_handle_t *hao = (ao_led_handle_t *)argument;
-	msg_t* pmsg;
+	bool rtrn;
+	EventPriority recvd_prt;
+	TickType_t previousTime;
 	while (true){
-		if (pdPASS == xQueueReceive(hao->hqueue, &pmsg, portMAX_DELAY)){
-			HAL_GPIO_WritePin(LED_RED_PORT, LED_RED_PIN, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(LED_GREEN_PORT, LED_GREEN_PIN, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(LED_BLUE_PORT, LED_BLUE_PIN, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin((GPIO_TypeDef *)hao->led_port, (uint16_t)hao->led_pin, GPIO_PIN_SET);
-			pmsg->callback_process(pmsg);
+		rtrn = PriorityQueue_Receive(&recvd_prt);
+		if (rtrn){
+			previousTime = xTaskGetTickCount();
+			switch (recvd_prt){
+				case EVENT_PRIORITY_HIGH:
+					LOGGER_INFO("Executing high priority event");
+					HAL_GPIO_WritePin(LED_RED_PORT, LED_RED_PIN, GPIO_PIN_SET);
+					vTaskDelayUntil(&previousTime, pdMS_TO_TICKS(EVENT_LED_PERIOD_));
+					HAL_GPIO_WritePin(LED_RED_PORT, LED_RED_PIN, GPIO_PIN_RESET);
+					break;
+				case EVENT_PRIORITY_MEDIUM:
+					LOGGER_INFO("Executing medium priority event");
+					previousTime = xTaskGetTickCount();
+					HAL_GPIO_WritePin(LED_GREEN_PORT, LED_GREEN_PIN, GPIO_PIN_SET);
+					vTaskDelayUntil(&previousTime, pdMS_TO_TICKS(EVENT_LED_PERIOD_));
+					HAL_GPIO_WritePin(LED_GREEN_PORT, LED_GREEN_PIN, GPIO_PIN_RESET);
+					break;
+				case EVENT_PRIORITY_LOW:
+					LOGGER_INFO("Executing low priority event");
+					previousTime = xTaskGetTickCount();
+					HAL_GPIO_WritePin(LED_BLUE_PORT, LED_BLUE_PIN, GPIO_PIN_SET);
+					vTaskDelayUntil(&previousTime, pdMS_TO_TICKS(EVENT_LED_PERIOD_));
+					HAL_GPIO_WritePin(LED_BLUE_PORT, LED_BLUE_PIN, GPIO_PIN_RESET);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }
 
-void ao_led_init (ao_led_handle_t *hao, GPIO_TypeDef *led_port, uint16_t led_pin){
-	hao->hqueue = xQueueCreate(LED_QUEUE_LENGTH_, LED_QUEUE_ITEM_SIZE_);
-	while (NULL == hao->hqueue){}
-
-	hao->led_port = led_port;
-	hao->led_pin  = led_pin;
-
+void ao_led_init (){
 	BaseType_t status;
-	status = xTaskCreate(task_led, "task_ao_led", 128, (void*)hao, tskIDLE_PRIORITY, NULL);
+	status = xTaskCreate(task_led, "task_ao_led", 128, NULL, tskIDLE_PRIORITY, NULL);
 	configASSERT(pdPASS == status);
 }

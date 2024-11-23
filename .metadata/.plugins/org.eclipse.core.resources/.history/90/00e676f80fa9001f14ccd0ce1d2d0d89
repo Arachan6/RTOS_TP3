@@ -1,0 +1,48 @@
+#include <ao_led.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+#include "main.h"
+#include "cmsis_os.h"
+#include "board.h"
+#include "logger.h"
+#include "dwt.h"
+#include "app.h"
+#include "ao_led.h"
+
+
+#define LED_PERIOD_        			(1000)
+#define LED_QUEUE_LENGTH_     		(5)
+#define LED_QUEUE_ITEM_SIZE_  		(sizeof(msg_t *))
+
+bool ao_led_send (msg_t *pmsg){
+	ao_led_handle_t* lh = (ao_led_handle_t*)pmsg->led_h;
+	return (pdPASS == xQueueSend(lh->hqueue, &pmsg, 0));
+}
+
+void task_led(void *argument){
+	ao_led_handle_t *hao = (ao_led_handle_t *)argument;
+	msg_t* pmsg;
+	while (true){
+
+		/*
+		if (pdPASS == xQueueReceive(hao->hqueue, &pmsg, portMAX_DELAY)){
+			HAL_GPIO_WritePin(LED_RED_PORT, LED_RED_PIN, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(LED_GREEN_PORT, LED_GREEN_PIN, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(LED_BLUE_PORT, LED_BLUE_PIN, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin((GPIO_TypeDef *)hao->led_port, (uint16_t)hao->led_pin, GPIO_PIN_SET);
+			pmsg->callback_process(pmsg);
+		}
+		*/
+	}
+}
+
+void ao_led_init (ao_led_handle_t *hao){
+	hao->hqueue = xQueueCreate(LED_QUEUE_LENGTH_, LED_QUEUE_ITEM_SIZE_);
+	while (NULL == hao->hqueue){}
+
+	BaseType_t status;
+	status = xTaskCreate(task_led, "task_ao_led", 128, (void*)hao, tskIDLE_PRIORITY, NULL);
+	configASSERT(pdPASS == status);
+}

@@ -1,0 +1,18 @@
+#ifndef INC_PRIORITY_QUEUE_H_
+#define INC_PRIORITY_QUEUE_H_
+
+#include "FreeRTOS.h"
+#include "queue.h"
+#include <stdint.h>
+#include <stdbool.h>
+
+#define MAX_PRIORITY_QUEUE_SIZE 10
+
+typedef struct {
+    uint32_t timestamp;
+    uint8_t priority;
+    void *data;
+} PriorityMessage;
+
+
+#endif /* INC_PRIORITY_QUEUE_H_ */

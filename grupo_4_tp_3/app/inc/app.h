@@ -46,21 +46,6 @@ extern "C" {
 
 /********************** typedef **********************************************/
 
-typedef struct {
-    QueueHandle_t hqueue;
-    GPIO_TypeDef * led_port;
-	uint16_t led_pin;
-} ao_led_handle_t;
-
-typedef struct msg_s msg_t;
-
-typedef void (*callback_t)(msg_t* pmsg);
-
-struct msg_s{
-    ao_led_handle_t* led_h;
-    callback_t callback_process;
-};
-
 /********************** external data declaration ****************************/
 
 /********************** external functions declaration ***********************/

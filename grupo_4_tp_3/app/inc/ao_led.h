@@ -23,8 +23,7 @@ extern "C" {
 
 /********************** external functions declaration ***********************/
 
-void ao_led_init(ao_led_handle_t* hao, GPIO_TypeDef* led_port, uint16_t led_pin);
-bool ao_led_send(msg_t* hao);
+void ao_led_init();
 
 /********************** End of CPP guard *************************************/
 #ifdef __cplusplus
