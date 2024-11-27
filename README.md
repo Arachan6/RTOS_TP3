@@ -1,1 +1,6 @@
-# RTOS_TP3
+## Integrantes
+
+- Gerardo Vilcamiza
+- Ramiro Sanes
+- Felipe Saravia
+
