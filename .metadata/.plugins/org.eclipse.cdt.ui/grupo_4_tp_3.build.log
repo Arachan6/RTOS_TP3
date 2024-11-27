@@ -1,22 +1,10 @@
-21:05:38 **** Incremental Build of configuration Debug for project grupo_4_tp_3 ****
+21:06:26 **** Incremental Build of configuration Debug for project grupo_4_tp_3 ****
 make -j4 all 
-arm-none-eabi-gcc "../app/src/ao_led.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F429xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -I../app/inc -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"app/src/ao_led.d" -MT"app/src/ao_led.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "app/src/ao_led.o"
-../app/src/ao_led.c: In function 'task_led':
-../app/src/ao_led.c:22:24: warning: implicit declaration of function 'PriorityQueue_Receive' [-Wimplicit-function-declaration]
-   22 |                 rtrn = PriorityQueue_Receive(&recvd_prt);
-      |                        ^~~~~~~~~~~~~~~~~~~~~
-arm-none-eabi-gcc -o "grupo_4_tp_3.elf" @"objects.list"  -lrdimon -mcpu=cortex-m4 -T"/home/felipe/Desktop/RTOS_TP3/grupo_4_tp_3/STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="grupo_4_tp_3.map" -Wl,--gc-sections -static -specs=rdimon.specs --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-/opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld: warning: grupo_4_tp_3.elf has a LOAD segment with RWX permissions
-Finished building target: grupo_4_tp_3.elf
- 
 arm-none-eabi-size  grupo_4_tp_3.elf 
-arm-none-eabi-objdump -h -S grupo_4_tp_3.elf  > "grupo_4_tp_3.list"
    text	   data	    bss	    dec	    hex	filename
-  32516	    124	  19980	  52620	   cd8c	grupo_4_tp_3.elf
+  33956	    124	  19988	  54068	   d334	grupo_4_tp_3.elf
 Finished building: default.size.stdout
  
-Finished building: grupo_4_tp_3.list
- 
 
-21:05:39 Build Finished. 0 errors, 2 warnings. (took 986ms)
+21:06:26 Build Finished. 0 errors, 0 warnings. (took 626ms)
 

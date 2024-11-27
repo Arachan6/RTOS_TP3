@@ -15,6 +15,7 @@ void app_init(void){
 
 	ao_ui_init(&ao_ui);
 	ao_led_init ();
+	PriorityQueue_Init();
 
 	BaseType_t status;
 	status = xTaskCreate(task_button, "task_ui", 128, NULL, tskIDLE_PRIORITY, NULL);
